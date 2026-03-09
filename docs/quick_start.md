@@ -230,25 +230,32 @@ pyasc支持通过pip快速安装和基于源码编译安装两种方式。
 
      ```bash
      source /usr/local/Ascend/cann/set_env.sh
-     # 若采用仿真器模式运行，需设置以下环境变量；若采用NPU上板模式运行则无需设置
-     export LD_LIBRARY_PATH=$ASCEND_HOME_PATH/tools/simulator/Ascend910B1/lib:$LD_LIBRARY_PATH
      ```
 
    - 默认路径，非root用户安装
 
      ```bash
      source $HOME/Ascend/cann/set_env.sh
-     # 若采用仿真器模式运行，需设置以下环境变量；若采用NPU上板模式运行则无需设置
-     export LD_LIBRARY_PATH=$ASCEND_HOME_PATH/tools/simulator/Ascend910B1/lib:$LD_LIBRARY_PATH
      ```
 
    - 指定路径安装
 
      ```bash
      source ${cann_install_path}/cann/set_env.sh
-     # 若采用仿真器模式运行，需设置以下环境变量；若采用NPU上板模式运行则无需设置
-     export LD_LIBRARY_PATH=$ASCEND_HOME_PATH/tools/simulator/Ascend910B1/lib:$LD_LIBRARY_PATH
      ```
+
+   注1：当pyasc后端采用仿真器模式（如Ascend910B1 simulator）时，需设置以下环境变量：
+   ```bash
+   export LD_LIBRARY_PATH=$ASCEND_HOME_PATH/tools/simulator/Ascend910B1/lib:$LD_LIBRARY_PATH
+   ```
+
+   注2：若pyasc后端采用仿真器模式运行接入torch的算子，需要提前加载仿真动态库libruntime_camodel.so。（原因：torch_npu默认只支持NPU上板，并且在导入torch_npu时自动加载libruntime.so，仿真器模式运行需要提前加载libruntime_camodel.so）。
+   ```bash
+   # 若pyasc后端采用仿真器模式，需设置LD_PRELOAD环境变量
+   export LD_PRELOAD=libruntime_camodel.so
+   # 若pyasc后端采用NPU处理器运行，需取消LD_PRELOAD环境变量
+   unset LD_PRELOAD
+   ```
 
    **注意：若环境中已安装多个版本的CANN软件包，设置上述环境变量时，请确保${cann_install_path}/latest目录指向的是配套版本的软件包。**
 
@@ -284,7 +291,7 @@ pyasc支持通过pip快速安装和基于源码编译安装两种方式。
 cd pyasc
 python3 ./python/tutorials/01_add/add.py
 ```
-注：完整的运行命令如下所示，通过参数[RUN_MODE]配置运行模式、参数[SOC_VERSION]配置运行环境，具体请参考[编译执行](../python/tutorials/01_add/README.md/#编译执行)。若缺省参数[RUN_MODE]默认是仿真器模式，缺省参数[SOC_VERSION]默认是`Ascend910B1`环境，请确保已完成[运行环境准备](#运行环境准备)中的[配置环境变量](#envset)步骤。
+注：完整的运行命令如下所示，通过参数[RUN_MODE]配置运行模式、参数[SOC_VERSION]配置运行环境，具体请参考[编译执行](../python/tutorials/01_add/README.md/#编译执行)。若缺省参数[RUN_MODE]默认是仿真器模式，缺省参数[SOC_VERSION]，仿真器模式下默认是`Ascend910B1`环境，NPU上板模式下默认自动检测，请确保已完成[运行环境准备](#运行环境准备)中的[配置环境变量](#envset)步骤。
 ```bash
 python3 ./python/tutorials/01_add/add.py -r [RUN_MODE] -v [SOC_VERSION]
 ```

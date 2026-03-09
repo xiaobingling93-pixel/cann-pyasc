@@ -19,6 +19,7 @@ import sysconfig
 from asc.runtime.cache import get_cache_manager
 from asc.runtime import config
 from .build_utils import build_npu_ext
+from ..utils import get_ascend_path
 
 
 class RuntimeInterface:
@@ -27,7 +28,12 @@ class RuntimeInterface:
         dirname = os.path.dirname(os.path.realpath(__file__))
         wrapper_name = "rt_wrapper"
         src = Path(os.path.join(dirname, f"{wrapper_name}.cpp")).read_text()
-        key = hashlib.sha256((src + str(is_model)).encode("utf-8")).hexdigest()
+
+        suffix_key = ""
+        version_cfg = get_ascend_path() / "version.cfg"
+        if version_cfg.exists():
+            suffix_key += version_cfg.read_text()
+        key = hashlib.sha256((src + suffix_key).encode("utf-8")).hexdigest()
         cache_manager = get_cache_manager(key)
         suffix = sysconfig.get_config_var("EXT_SUFFIX")
         rt_lib = cache_manager.get_file(f"lib{wrapper_name}{suffix}")
@@ -83,7 +89,11 @@ class NPUUtils:
         utils_name = "npu_utils"
         src = Path(os.path.join(dirname, f"{utils_name}.cpp")).read_text()
 
-        key = hashlib.sha256((src + str(is_model)).encode("utf-8")).hexdigest()
+        suffix_key = ""
+        version_cfg = get_ascend_path() / "version.cfg"
+        if version_cfg.exists():
+            suffix_key += version_cfg.read_text()
+        key = hashlib.sha256((src + suffix_key).encode("utf-8")).hexdigest()
         cache_manager = get_cache_manager(key)
         suffix = sysconfig.get_config_var("EXT_SUFFIX")
         utils_lib = cache_manager.get_file(f"lib{utils_name}{suffix}")

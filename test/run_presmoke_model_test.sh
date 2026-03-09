@@ -28,6 +28,7 @@ test_examples=(
 passed_examples=()
 failed_examples=()
 
+export LD_PRELOAD=libruntime_camodel.so
 for example in "${test_examples[@]}"; do
     if run_test "$example"; then
         passed_examples+=("$example")
@@ -35,6 +36,7 @@ for example in "${test_examples[@]}"; do
         failed_examples+=("$example")
     fi
 done
+unset LD_PRELOAD
 
 echo "[INFO] Passed tests list:"
 for test in "${passed_examples[@]}"; do
