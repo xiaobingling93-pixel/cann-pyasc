@@ -11,3 +11,4 @@
 # Programming models
 
 * [asc.lib.host](host.md)
+* [asc.runtime.config](config.md)
