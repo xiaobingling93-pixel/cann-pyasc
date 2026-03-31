@@ -33,7 +33,7 @@ class RuntimeInterface:
         version_cfg = get_ascend_path() / "version.cfg"
         if version_cfg.exists():
             suffix_key += version_cfg.read_text()
-        key = hashlib.sha256((src + suffix_key).encode("utf-8")).hexdigest()
+        key = hashlib.sha256((src + suffix_key + str(is_model)).encode("utf-8")).hexdigest()
         cache_manager = get_cache_manager(key)
         suffix = sysconfig.get_config_var("EXT_SUFFIX")
         rt_lib = cache_manager.get_file(f"lib{wrapper_name}{suffix}")
@@ -93,7 +93,7 @@ class NPUUtils:
         version_cfg = get_ascend_path() / "version.cfg"
         if version_cfg.exists():
             suffix_key += version_cfg.read_text()
-        key = hashlib.sha256((src + suffix_key).encode("utf-8")).hexdigest()
+        key = hashlib.sha256((src + suffix_key + str(is_model)).encode("utf-8")).hexdigest()
         cache_manager = get_cache_manager(key)
         suffix = sysconfig.get_config_var("EXT_SUFFIX")
         utils_lib = cache_manager.get_file(f"lib{utils_name}{suffix}")

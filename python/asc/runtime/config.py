@@ -68,4 +68,10 @@ def set_platform(
     if device_id is not None:
         rt.set_device(device_id)
     if check and not rt.is_available():
-        raise RuntimeError("Runtime library must be available!")
+        error_msg = "Runtime library is not available! "
+        if backend == Backend.Model:
+            error_msg += f"Please export LD_LIBRARY_PATH=$ASCEND_HOME_PATH/tools/"  \
+                "simulator/{soc_version.value}/lib:$LD_LIBRARY_PATH"
+
+        raise RuntimeError(error_msg)
+        
