@@ -27,7 +27,7 @@ import tarfile
 from typing import Optional, Tuple
 import urllib
 
-DEFAULT_VERSION = "1.0.0"
+DEFAULT_VERSION = "1.1.1"
 
 
 @dataclass
@@ -300,7 +300,7 @@ class LocalInstall(install.install):
 
 
 def wheel_base_version(version: setuptools_scm.ScmVersion) -> str:
-    return os.environ.get("PYASC_SETUP_VERSION", "1.0.0")
+    return os.environ.get("PYASC_SETUP_VERSION", "1.1.1")
 
 
 def wheel_local_version(version: setuptools_scm.ScmVersion) -> str:
